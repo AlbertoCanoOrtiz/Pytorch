@@ -1,0 +1,5 @@
+embeddings {
+  tensor_name: "ref_code_steps:00000"
+  metadata_path: "00000/ref_code_steps/metadata.tsv"
+  tensor_path: "00000/ref_code_steps/tensors.tsv"
+}

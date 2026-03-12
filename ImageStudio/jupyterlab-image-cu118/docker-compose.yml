@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  jupyterlab:
+    build: .
+    container_name: jupyterlab-image-cu118
+    ports: 
+      - "3030:8888"
+    volumes:
+      - ./workspace:/workspace
+      - ./runs:/runs
+    networks:
+      scientist:
+        ipv4_address: 172.30.0.66
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+  tensorboard:
+    image: python:3.11-slim
+    container_name: tensorboard-image-cu118
+    working_dir: /workspace
+    command: bash -c "pip install tensorboard && tensorboard --logdir=/runs --host=0.0.0.0 --port=6006"
+    ports:
+      - "6007:6006"
+    volumes:
+      - ./workspace:/workspace
+      - ./runs:/runs
+    networks:
+      scientist:
+        ipv4_address: 172.29.0.67
+
+networks:
+  scientist:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.29.0.0/16
